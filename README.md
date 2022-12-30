@@ -1,5 +1,7 @@
 # AudioFileInfo
 
+## Please note that this gem is in development and is not ready for use
+
 The AudioFileInfo gem provides basic validity-checking and other
 information for four standard audio file formats:
 
