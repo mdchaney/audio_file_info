@@ -7,14 +7,15 @@ module AudioFileInfo
 
     attr_reader :chunks
 
-    EXTENSIONS = %w{ wav }.freeze
+    EXTENSIONS = %w{ .wav }.freeze
 
-    def can_handle_file?(ext)
-      EXTENSIONS.includes? ext
+    def self.can_handle_file?(ext)
+      EXTENSIONS.include? ext
     end
 
     def initialize(original_filename)
       @filename = original_filename
+      @filetype = 'wav'
 
       File.open(original_filename, 'rb') do |file|
         begin
