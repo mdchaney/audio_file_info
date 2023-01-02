@@ -4,7 +4,8 @@ module AudioFileInfo
   class WavFile < AudioFileInfo::AudioFile
     class Chunk
       class Base
-        attr_reader :chunk_type, :file_position, :length, :chunk_raw_content, :valid
+        attr_reader :chunk_type, :file_position, :length
+        attr_reader :chunk_raw_content, :valid
 
         class << self
           attr_reader :recognized_chunk_types
@@ -12,25 +13,32 @@ module AudioFileInfo
 
         @recognized_chunk_types = {}
 
-        def self.inherited(subclass)
-          AudioFileInfo::WavFile::Chunk::Base.recognized_chunk_types[subclass.to_s.split('::').last.downcase] = subclass
-        end
+        class << self
+          def inherited(subclass)
+            AudioFileInfo::WavFile::Chunk::Base.recognized_chunk_types[subclass.to_s.split("::").last.downcase] =
+              subclass
+            super
+          end
 
-        def self.chunk_for(file, prior_chunks)
-          chunk_type = file.read(4)
-          return nil unless chunk_type.size == 4
-          chunk_type.strip!
+          def chunk_for(file, prior_chunks)
+            chunk_type = file.read(4)
+            return nil unless chunk_type.size == 4
 
-          chunk_class = @recognized_chunk_types[chunk_type] || AudioFileInfo::WavFile::Chunk::Generic
+            chunk_type.strip!
 
-          # Passing chunk type in here in case it's using "generic"
-          chunk_class.new(file, chunk_type, prior_chunks)
-        end
+            chunk_class = @recognized_chunk_types[chunk_type] ||
+              AudioFileInfo::WavFile::Chunk::Generic
 
-        def self.read_length(file)
-          raw_length = file.read(4)
-          return nil unless raw_length.size == 4
-          raw_length.unpack('V').first
+            # Passing chunk type in here in case it's using "generic"
+            chunk_class.new(file, chunk_type, prior_chunks)
+          end
+
+          def read_length(file)
+            raw_length = file.read(4)
+            return nil unless raw_length.size == 4
+
+            raw_length.unpack("V").first
+          end
         end
 
         # This sets the standard chunk attributes.  It will return "nil"
@@ -49,7 +57,7 @@ module AudioFileInfo
         # This uses @length to just skip the rest of the chunk.
         # If the chunk is an odd length it will skip the extra byte.
         def skip_chunk(file)
-          file.seek(length + (length.odd? ? 1 : 0),IO::SEEK_CUR)
+          file.seek(length + (length.odd? ? 1 : 0), IO::SEEK_CUR)
         end
 
         # This reads @length bytes from the file into @chunk_raw_content.
@@ -58,6 +66,7 @@ module AudioFileInfo
         def read_chunk(file)
           raw_content = file.read(length)
           return nil unless raw_content && raw_content.size == length
+
           file.seek(1, IO::SEEK_CUR) if length.odd?
           @chunk_raw_content = raw_content
         end

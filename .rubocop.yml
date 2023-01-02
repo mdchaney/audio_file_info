@@ -1,13 +1,28 @@
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
 AllCops:
-  TargetRubyVersion: 2.6
-
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: double_quotes
-
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
+  TargetRubyVersion: 2.4
+  NewCops: enable
 
 Layout/LineLength:
-  Max: 120
+  Max: 80
+
+# These items apparently aren't in the shopify rubocop.yml yet
+Lint/DuplicateMagicComment: # new in 1.37
+  Enabled: true
+Style/ArrayIntersect: # new in 1.40
+  Enabled: true
+Style/ConcatArrayLiterals: # new in 1.41
+  Enabled: true
+Style/OperatorMethodCall: # new in 1.37
+  Enabled: true
+Style/RedundantConstantBase: # new in 1.40
+  Enabled: true
+Style/RedundantDoubleSplatHashBraces: # new in 1.41
+  Enabled: true
+Style/RedundantEach: # new in 1.38
+  Enabled: true
+Style/RedundantStringEscape: # new in 1.37
+  Enabled: true
+

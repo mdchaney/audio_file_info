@@ -12,9 +12,12 @@ module AudioFileInfo
 
             # Use information from the format chunk to get our
             # number of sample frames.
-            fmt_chunk = prior_chunks.detect { |chunk| chunk.chunk_type == 'fmt' }
+            fmt_chunk = prior_chunks.detect do |chunk|
+              chunk.chunk_type == "fmt"
+            end
             if fmt_chunk
-              @number_of_sample_frames = length / (fmt_chunk.bytes_per_sample * fmt_chunk.number_of_channels)
+              @number_of_sample_frames = length /
+                (fmt_chunk.bytes_per_sample * fmt_chunk.number_of_channels)
             else
               # A format chunk must precede the data chunk
               @valid = false

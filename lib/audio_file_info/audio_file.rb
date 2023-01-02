@@ -17,28 +17,25 @@ module AudioFileInfo
     alias_method :content_valid?, :content_valid
     alias_method :type_valid?, :type_valid
 
-    class << self
-      attr_reader :file_specific_classes
-    end
-
     @file_specific_classes = []
 
-    # Add subclasses here so we can keep track of them
-    def self.inherited(subclass)
-      AudioFileInfo::AudioFile.file_specific_classes << subclass
-    end
+    class << self
+      attr_reader :file_specific_classes
 
-    # Main method - find a subclass to handle this file type and
-    # hand if off
-    def self.open(original_filename)
-      @filename = original_filename
+      # Add subclasses here so we can keep track of them
+      def inherited(subclass)
+        AudioFileInfo::AudioFile.file_specific_classes << subclass
+        super
+      end
 
-      ext = File.extname(original_filename).downcase
-      runner = @file_specific_classes.detect { |c| c.can_handle_file?(ext) }
-      if runner
-        runner.new(original_filename)
-      else
-        nil
+      # Main method - find a subclass to handle this file type and
+      # hand if off
+      def open(original_filename)
+        @filename = original_filename
+
+        ext = File.extname(original_filename).downcase
+        runner = @file_specific_classes.detect { |c| c.can_handle_file?(ext) }
+        runner&.new(original_filename)
       end
     end
 
@@ -48,7 +45,12 @@ module AudioFileInfo
     end
 
     def inspect
-      "#<#{self.class.name}:#{'0x%x' % (self.object_id)}, filename: #{filename}, filetype: #{filetype}, duration: #{duration}, valid: #{valid}, content_valid: #{content_valid}, type_valid: #{type_valid}>"
+      <<~INSPECT.gsub(/\n/, " ")
+        #<#{self.class.name}:#{format("0x%x", object_id)},
+        filename: #{filename}, filetype: #{filetype},
+        duration: #{duration}, valid: #{valid},
+        content_valid: #{content_valid}, type_valid: #{type_valid}>
+      INSPECT
     end
   end
 end
