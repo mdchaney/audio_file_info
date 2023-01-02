@@ -27,7 +27,10 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     %x(git ls-files -z).split("\x0").reject do |f|
       (f == __FILE__) ||
-        f.match(%r{\A(?:(?:test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
+        f.match(%r{
+          \A(?:(?:test|spec|features)/|
+          \.(?:git|travis|circleci)|appveyor)
+        }x)
     end
   end
   spec.bindir = "exe"

@@ -15,7 +15,8 @@ module AudioFileInfo
 
         class << self
           def inherited(subclass)
-            AudioFileInfo::WavFile::Chunk::Base.recognized_chunk_types[subclass.to_s.split("::").last.downcase] =
+            AudioFileInfo::WavFile::Chunk::Base
+              .recognized_chunk_types[subclass.to_s.split("::").last.downcase] =
               subclass
             super
           end
@@ -50,8 +51,6 @@ module AudioFileInfo
           return nil if @length.nil?
 
           @chunk_type = chunk_type
-
-          self
         end
 
         # This uses @length to just skip the rest of the chunk.
