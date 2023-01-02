@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
       "well as validity checking.  It doesn't rely on any other libraries."
   spec.homepage = "https://github.com/mdchaney/audio_file_info"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.4.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
